@@ -1,0 +1,40 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+  - ../../version/prd/
+#  - projects/
+  - clusters/
+  - repos/
+  - ../../base/
+
+
+configMapGenerator:
+  - name: argocd-rbac-cm
+    behavior: merge
+    literals:
+      - policy.default=role:''
+    files:
+      - policy.team.csv
+
+patches:
+- path: configmaps.yaml
+- path: azure-workload-identity.yaml
+- path: scrapers.yaml
+- target:
+    kind: StatefulSet
+    name: argocd-application-controller
+  patch: |-
+    - op: test
+      path: /spec/template/spec/containers/0/env/1/name
+      value: ARGOCD_CONTROLLER_REPLICAS
+    - op: replace
+      path: "/spec/template/spec/containers/0/env/1"
+      value:
+        name: ARGOCD_CONTROLLER_REPLICAS
+        value: '2'
+    - op: replace
+      path: /spec/replicas
+      value: 2

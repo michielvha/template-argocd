@@ -1,0 +1,80 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+resources:
+  - ../../version/dev
+#  - projects/
+  - secrets.yaml
+  - repos/
+  - ../../base/
+
+configMapGenerator:
+  - name: argocd-rbac-cm
+    behavior: merge
+    literals:
+      - policy.default=role:''
+    files:
+      - policy.default.csv
+
+patches:
+- path: configmaps.yaml
+- path: azure-workload-identity.yaml
+- path: scrapers.yaml
+- target:
+    kind: StatefulSet
+    name: argocd-application-controller
+  patch: |-
+    - op: test
+      path: /spec/template/spec/containers/0/env/1/name
+      value: ARGOCD_CONTROLLER_REPLICAS
+    - op: replace
+      path: "/spec/template/spec/containers/0/env/1"
+      value:
+        name: ARGOCD_CONTROLLER_REPLICAS
+        value: '2'
+    - op: replace
+      path: /spec/replicas
+      value: 2
+
+
+- target:
+    kind: Application
+    name: .*
+  patch: |
+    - op: replace
+      path: /metadata/labels/env
+      value: dev
+    - op: replace
+      path: /spec/project
+      value: default
+    - op: replace
+      path: /spec/source/path
+      value: manifests/argocd/overlays/dev
+
+
+
+- target:
+    kind: Ingress
+    name: argocd-server-ingress
+  patch: |
+    - op: replace
+      path: /spec/rules/0/host
+      value: argocd-dev.azure.bnl-ms.myengie.com
+    - op: replace
+      path: /spec/tls/0/hosts/0
+      value: argocd-dev.azure.bnl-ms.myengie.com
+    - op: replace
+      path: /spec/tls/0/secretName
+      value: azure.bnl-ms.myengie.com
+
+# New Patch for notification integration with teams
+- target:
+    kind: ConfigMap
+    name: argocd-notifications-cm
+  patch: |-
+    - op: add
+      path: /data/service.teams
+      value: |
+        recipientUrls:
+          eai: $eai-teams-url

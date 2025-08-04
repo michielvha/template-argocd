@@ -1,0 +1,50 @@
+# To mount the required secrets for entraID integration and ingress configuration we use SecretClassProvider to bootstrap the secrets, for this some extra config in argocd-server deployment is patched onto the deployment as seen below.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-server
+spec:
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        azure.workload.identity/use: "true"
+    spec:
+      containers:
+      - name: argocd-server
+        args:
+          - /usr/local/bin/argocd-server
+          -  --content-security-policy=""
+---
+# modify application-controller StatefulSet to use workload identity
+apiVersion:  apps/v1
+kind: StatefulSet
+metadata:
+  name: argocd-application-controller
+spec:
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        azure.workload.identity/use: "true"
+---
+# ServiceAccount for argocd-server and argocd-application-controller to use Azure Workload Identity
+# Replace <ARGOCD_UMI_CLIENT_ID> with the client ID of your Azure Workload Identity application configured via terraform.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: <ARGOCD_UMI_CLIENT_ID>
+    azure.workload.identity/tenant-id: <YOUR_TENANT_ID>
+  name: argocd-server
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: <ARGOCD_UMI_CLIENT_ID>
+    azure.workload.identity/tenant-id: <YOUR_TENANT_ID>
+  name: argocd-application-controller
+---

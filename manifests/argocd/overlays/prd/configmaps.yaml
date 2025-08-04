@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  application.resourceTrackingMethod: annotation
+  admin.enabled: "true"
+  url: https://argocd.your.domain.com
+  statusbadge.enabled: 'true'
+  kustomize.buildOptions: --enable-helm
+  accounts.serviceaccount: apiKey, login
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+data:
+  scopes: '[groups]'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+data:
+ application.namespaces: argocd, infra
+---
