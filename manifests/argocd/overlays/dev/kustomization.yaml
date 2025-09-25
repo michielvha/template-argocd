@@ -52,22 +52,6 @@ patches:
       path: /spec/source/path
       value: manifests/argocd/overlays/dev
 
-
-
-- target:
-    kind: Ingress
-    name: argocd-server-ingress
-  patch: |
-    - op: replace
-      path: /spec/rules/0/host
-      value: argocd-dev.azure.bnl-ms.myengie.com
-    - op: replace
-      path: /spec/tls/0/hosts/0
-      value: argocd-dev.azure.bnl-ms.myengie.com
-    - op: replace
-      path: /spec/tls/0/secretName
-      value: azure.bnl-ms.myengie.com
-
 # New Patch for notification integration with teams
 - target:
     kind: ConfigMap
@@ -77,4 +61,4 @@ patches:
       path: /data/service.teams
       value: |
         recipientUrls:
-          eai: $eai-teams-url
+          dev: $dev-teams-url
