@@ -3,10 +3,11 @@ kind: Kustomization
 
 resources:
 - namespaces.yaml # extra namespaces for argocd apps
+- ../../base/ # import only agnostic components in base.
 - ../../base/argocd/overlays/prd
 #- ../../base/aws-load-balancer-controller/overlays/prd
 - ../../base/external-secrets-operator
-- ../../base/reloader
+
 
 patches:
 - target:
