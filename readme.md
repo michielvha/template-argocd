@@ -2,7 +2,7 @@
 
 **TODO: Turn into our main template that has functionalities for all cloud platforms we've used. We should allow to easily enable and disable these features via kustomize.**
 
-This repository is used for bootstrapping a complete GitOps platform foundation including Argo CD, External Secrets Operator (ESO), and AWS Load Balancer Controller.  
+This repository is used for bootstrapping a complete GitOps platform foundation including Argo CD, External Secrets Operator (ESO), and "decide load balancer solution".  
 
 This repository serves as a base template for managing a GitOps platform configurations across different environments (development and production) using a kustomize-based approach.
 
@@ -17,10 +17,14 @@ We include the Platform Engineering and GitOps Paradigms to ensure a robust, sca
 
 ## General Architecture
 
-What makes a great platform is mostly depending on your use case and requirements. It will depend on which type of cloud provider you are using, or maybe you are on prem, who knows.
-The purpose of this repository is to provide a basic template that can be used as a starting point for your own platform no matter which infrastructure you are on.
+Which Tooling makes a great platform is highly subjective and mostly depended on your specific requirements. 
+It will depend on which type of cloud provider you are using, or maybe you are on prem, who knows.
+
+The purpose of this repository is to provide a basic template that can be used as a starting point for any platform no matter which infrastructure you are on. 
+While the main focus of kubernetes is cloud we will include some on-prem components as well (for all my home labbers and true kubernetes warriors).
+
 Given our requirements we have decided to follow the gitops separation of concerns, this repository will only contain the platform related application components and not the application workload related components.
-It will also not include any infrastructure related components, as these will be managed outside argocd by an IaC tool.
+It will also not include any infrastructure related components (CSI Drivers, Cloud-Specific controllers,...), as these will be managed outside argocd by an IaC tool (enabled via add-ons).
 
 We allow developers to create their own infrastructure related components via crossplane, but only if these are app related and not infra related.
 
@@ -44,51 +48,52 @@ To ensure separation of concerns, three repositories are used to manage the comp
 
 ## Essential Platform Components
 
-The essential components of this GitOps platform are required to provide a robust and secure foundation for managing Kubernetes clusters and applications.
+The essential components of this GitOps platform are the minimum required to provide a robust and secure foundation for managing Kubernetes clusters and applications.
 
-Ofcourse this is just a template, so you can remove/add any components you (don't) need. However, I would recommend to keep these components as a pure base that is fully cloud-agnostic.
+Ofcourse this is just a template, so you can remove/add any components you (don't) need. However, I would recommend to keep these components as a pure base.
 
 - **Secret Management Tool:** for secure handling of sensitive information.
-  - **External Secrets Operator** (ESO): Integrates external secret management systems with Kubernetes, providing secure secret synchronization from external sources.
+  - **External Secrets Operator:** (ESO): Integrates external secret management systems with Kubernetes, providing secure secret synchronization from external sources.
 - **Continuous Delivery Tool:** Automates the deployment of applications and infrastructure changes.
-  - **Argo CD** for GitOps-based continuous delivery, configured for self-management and application deployment.
+  - **Argo CD:** for GitOps-based continuous delivery, configured for self-management and application deployment.
 - **Essential Add-ons:**
-  - **Reloader**: A Kubernetes controller that watches for changes in ConfigMaps and Secrets and triggers pod restarts to apply the new
+  - **Reloader:** A Kubernetes controller that watches for changes in ConfigMaps and Secrets and triggers pod restarts to apply the new
 
 ## Optional Platform Components
 
 The optional components can be included based on specific requirements and use cases. 
-These are the cloud specific components you are still best of using in most case and thus cannot escape.
+These are often the cloud specific components, you are still best of using in most case and thus cannot escape.
 These components enhance the platform's capabilities but are not strictly necessary for what we might consider basic operation.
 
-- Load Balancer Management: 
-  - **AWS Load Balancer Controller** for managing load balancers (ALB/NLB) in AWS environments via ingress sources.
-  - **Azure Application Gateway Ingress Controller** for managing Azure Application Gateway in Azure environments via ingress sources.
+- **Load Balancer Management:** 
+  - **Envoy Proxy:** as a high-performance proxy server for load balancing and service mesh capabilities, fully cloud-agnostic, however unfortunately no longer actively maintained on EKS since it creates a classic load balancer, this is thus not suitable for AWS.
+  - **AWS Load Balancer Controller:** for managing load balancers (ALB/NLB) in AWS environments via ingress sources, currently only option for proper aws integration.
+  - **Metal-lb:** as a simple, lightweight load balancer for bare-metal Kubernetes clusters.
 
-    
+> [!NOTE]
+> You might notice that we do not include many tools, this is fully intentional.
+> Any application that is not strictly required for the platform's core functionality (e.g. additional policies, auto-scaling, monitoring,...) has been left out.
+> While not strictly required, they are often applications that must run on every platform cluster and should instead be added to a ``post-deploy`` application,
+> which is managed by **Argo CD** through the ``k8s-resources``` workload manifests repository.
+
 ## Repository Structure
 
 Our template Platform configuration follows a kustomize-based approach with the following structure:
 
-**TODO: update below to latest structure**
-
 ```
 manifests/
-    base/                  # Base components for all environments
-        aks-clusters/      # Base AKS cluster configurations
-        repos/             # Base repository configurations
-    overlays/
-      dev/                 # Development environment specific configs
-        projects/          # ArgoCD projects for dev
-        repos/             # Repository configurations for dev
-      prd/                 # Production environment specific configs
-        clusters/          # Managed clusters in production
-        projects/          # ArgoCD projects for production
-        repos/             # Repository configurations for production
-    version/
-      dev/                 # ArgoCD version definition for dev
-      prd/                 # ArgoCD version definition for prod
+  base/                             # Base platform components (see individual app readme files)
+    argocd/                         # ArgoCD base setup (see manifests/base/argocd/readme.md)
+    envoy/                          # Envoy base setup (see manifests/base/envoy/readme.md)
+    aws-load-balancer-controller/   # AWS LB Controller base setup
+    external-secrets-operator/      # ESO base setup
+    reloader/                       # Reloader base setup
+  overlays/
+    dev/                            # Development environment overlay
+    prd/                            # Production environment overlay
 ```
+
+> Details for each base app (argocd, envoy, etc.) are documented in their respective readme files under manifests/base.
 
 **TODO: explain only the main platform overlay folders here, rest of the info should be in a readme in the several app folders under manifests/base.**
 
