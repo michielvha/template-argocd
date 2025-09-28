@@ -11,7 +11,7 @@ spec:
     name: in-cluster
   project: default
   source:
-    repoURL: https://github.com/org0031-landing-zone/argocd-platform-setup.git
+    repoURL: https://github.com/michielvha/template-argocd-platform.git
     path: <TO_OVERLAY>
     targetRevision: main
   # https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/2.14-3.0/#removing-default-ignores-of-preserveunknownfields-for-crd
