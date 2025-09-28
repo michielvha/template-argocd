@@ -14,11 +14,11 @@ We include the Platform Engineering and GitOps Paradigms to ensure a robust, sca
 
 ## General Architecture
 
-Which Tooling makes a great platform is highly subjective and mostly depended on your specific requirements. 
-It will depend on which type of cloud provider you are using, or maybe you are on prem, who knows.
+What makes a great platform is pretty subjective and really comes down to your own requirements.
+It depends on the cloud provider you are using, or maybe you are on prem, who knows.
 
 The purpose of this repository is to provide a basic template that can be used as a starting point for any platform no matter which infrastructure you are on. 
-While the main focus of kubernetes is cloud we will include some on-prem components as well (for all my home labbers and true kubernetes warriors).
+While the main focus of this template is cloud we will include an on-prem component as well (for all my home labbers and true kubernetes warriors).
 
 Given our requirements we have decided to follow the gitops separation of concerns, this repository will only contain the platform related application components and not the application workload related components.
 It will also not include any infrastructure related components (CSI Drivers, Cloud-Specific controllers,...), as these should be managed outside argocd by an IaC tool (enabled via add-ons).
