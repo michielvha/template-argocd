@@ -1,23 +1,79 @@
-# ArgoCD
+# GitOps Platform Template
 
 **TODO: Turn into our main template that has functionalities for all cloud platforms we've used. We should allow to easily enable and disable these features via kustomize.**
 
-ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes.
+This repository is used for bootstrapping a complete GitOps platform foundation including Argo CD, External Secrets Operator (ESO), and AWS Load Balancer Controller.  
 
-Changes both in the cluster and in the Git repository are detected and applied to the cluster.
-This way we can be sure that the cluster is always in the desired state.
+This repository serves as a base template for managing a GitOps platform configurations across different environments (development and production) using a kustomize-based approach.
 
-This repository serves as a base template for managing ArgoCD configurations across different environments (development and production) using a kustomize-based approach.
+All the environment specific stuff will have to be added to an overlay based on your needs.
 
-All the platform specific stuff will have to be added to an overlay based on your needs.
+We include the Platform Engineering and GitOps Paradigms to ensure a robust, scalable, and secure foundation for managing Kubernetes clusters and applications.
 
+> [!IMPORTANT]
+> By default the `main` branch of this repository is continually reconciled by the Argo CD Controller. Any changes made to this
+> branch will be automatically applied to the live environment. Please ensure all modifications are
+> intentional and reviewed before committing.
+
+## General Architecture
+
+What makes a great platform is mostly depending on your use case and requirements. It will depend on which type of cloud provider you are using, or maybe you are on prem, who knows.
+The purpose of this repository is to provide a basic template that can be used as a starting point for your own platform no matter which infrastructure you are on.
+Given our requirements we have decided to follow the gitops separation of concerns, this repository will only contain the platform related application components and not the application workload related components.
+It will also not include any infrastructure related components, as these will be managed outside argocd by an IaC tool.
+
+We allow developers to create their own infrastructure related components via crossplane, but only if these are app related and not infra related.
+
+### GitOps Definition
+
+We consider GitOps to be:
+
+- Git as the single source of truth for declarative infrastructure and applications.
+- Folder per environment (e.g., `dev`, `prd`) containing kustomize overlays for environment-specific configurations. NO Branches per environment.
+  - Automated deployment of changes (through pull requests) on main branch using "trunk-based" development.
+- Clear separation of concerns between platform setup, argocd applications and K8S application configuration.
+
+To ensure separation of concerns, three repositories are used to manage the complete platform setup:
+
+* Platform foundation and component
+  installation: <TO_ADD>
+* Argo CD application
+  definitions: <TO_ADD>
+* Kubernetes manifests or Helm charts used by Argo CD
+  applications: <TO_ADD>
+
+## Essential Platform Components
+
+The essential components of this GitOps platform are required to provide a robust and secure foundation for managing Kubernetes clusters and applications.
+
+Ofcourse this is just a template, so you can remove/add any components you (don't) need. However, I would recommend to keep these components as a pure base that is fully cloud-agnostic.
+
+- **Secret Management Tool:** for secure handling of sensitive information.
+  - **External Secrets Operator** (ESO): Integrates external secret management systems with Kubernetes, providing secure secret synchronization from external sources.
+- **Continuous Delivery Tool:** Automates the deployment of applications and infrastructure changes.
+  - **Argo CD** for GitOps-based continuous delivery, configured for self-management and application deployment.
+- **Essential Add-ons:**
+  - **Reloader**: A Kubernetes controller that watches for changes in ConfigMaps and Secrets and triggers pod restarts to apply the new
+
+## Optional Platform Components
+
+The optional components can be included based on specific requirements and use cases. 
+These are the cloud specific components you are still best of using in most case and thus cannot escape.
+These components enhance the platform's capabilities but are not strictly necessary for what we might consider basic operation.
+
+- Load Balancer Management: 
+  - **AWS Load Balancer Controller** for managing load balancers (ALB/NLB) in AWS environments via ingress sources.
+  - **Azure Application Gateway Ingress Controller** for managing Azure Application Gateway in Azure environments via ingress sources.
+
+    
 ## Repository Structure
 
-Our template ArgoCD configuration follows a kustomize-based approach with the following structure:
+Our template Platform configuration follows a kustomize-based approach with the following structure:
+
+**TODO: update below to latest structure**
 
 ```
 manifests/
-  argocd/
     base/                  # Base components for all environments
         aks-clusters/      # Base AKS cluster configurations
         repos/             # Base repository configurations
@@ -34,82 +90,30 @@ manifests/
       prd/                 # ArgoCD version definition for prod
 ```
 
-## Configuration Details
+**TODO: explain only the main platform overlay folders here, rest of the info should be in a readme in the several app folders under manifests/base.**
 
-### Base Configuration
-The base configuration of ArgoCD is done in the `base` folder.
-This folder contains all the general basic deployment configuration of ArgoCD.
+## Usage
 
-### Base Clusters
-The base clusters configuration is done in the `base/clusters` folder.
-This folder contains all the general basic cluster configuration of ArgoCD.
+Apply the appropriate overlay to the target Kubernetes cluster (development or production).  
+Components will be deployed into their respective namespaces:
 
-### Base Repos
-The base repo configuration is done in the `base/repos` folder.
-This folder contains all the general basic repo configuration of ArgoCD.
-
-### Overlays
-The overlays folder contains all the overlays for the different environments.
-Currently, we have:
-- `dev` : Development environment
-- `prd` : Production environment
-
-You can add more overlays for other environments as needed.
-
-### Version Management
-The version folder contains the `kustomization.yaml` files that pull in the manifests from GitHub. When upgrading ArgoCD, update the URL to the desired version.
-- `dev` folder: Contains configuration for development environment versioning
-- `prd` folder: Contains configuration for production environment versioning
-
-## Additional Components
-
-### Declarative Cluster Configuration
-
-Declarative Cluster configurations ensures easy deployment using azure workload identities. If cluster has to be redeployed, it will be automatically be re-added to ArgoCD.
-
-To enable this the `azure-patches.yaml` file should be patched onto the configuration. A template has been provided, but it can be customized as needed.
-
-Refer to this Guide to figure out how to do this
-
-### Projects
-All projects & RBAC can be configured in the projects directory.
-
-### Declarative Repositories Configuration
-Declarative Repositories Configuration ensures easy deployment using external secrets operator.
-
-### Configmaps
-The configmaps patches are generated by the kustomization file and can be found in config directory.
-Refer to the [ArgoCD documentation](https://argoproj.github.io/argo-cd/operator-manual/cluster-bootstrapping/) for more information.
-
-### Applications
-Each team should have their own application directories:
-- `argocd-apps`: Contains all applications managed by ArgoCD (deployed with an app of apps pattern)
-- `k8s-resources`: Contains all resources deployed by the ArgoCD application
-
-## Installation and Management
-
-### Installation
-
-Initial installation of ArgoCD is done with the following command:
+- Argo CD: `argocd` namespace
+- External Secrets Operator: `external-secrets` namespace
+- AWS Load Balancer Controller: `kube-system` namespace
 
 ```bash
-kubectl apply -k manifests/argocd
+# Development
+kubectl apply -k manifests/platform/overlays/dev
+
+# Production
+kubectl apply -k manifests/platform/overlays/prd
 ```
-After this command is executed, ArgoCD will be installed in the `argocd` namespace.
 
-### Upgrade
-Before upgrading ArgoCD, please refer to the [tested version](https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/#supported-versions).
+This setup ensures that all platform components are installed and configured to work together, with Argo CD managing its
+own resources and the broader application ecosystem within the cluster.
 
-To upgrade, update the version reference in the appropriate `version/{env}/kustomization.yaml` file and apply the changes.
 
-### Recovery
-If the ArgoCD installation is corrupted or the cluster is redeployed, it can be recovered with the following command:
+## TODO:
 
-```bash
-kubectl apply -k manifests/argocd
-```
-When the main cluster is redeployed, we only need to redeploy our argocd application and all other applications will be deployed automatically.
-
-## References
-
-For more information, refer to the [ArgoCD documentation](https://argoproj.github.io/argo-cd/operator-manual/cluster-bootstrapping/).
+- Add external DNS operator
+- Add Cluster Auto Scaler
