@@ -25,7 +25,7 @@ The purpose of this repository is to provide a basic template that can be used a
 While the main focus of kubernetes is cloud we will include some on-prem components as well (for all my home labbers and true kubernetes warriors).
 
 Given our requirements we have decided to follow the gitops separation of concerns, this repository will only contain the platform related application components and not the application workload related components.
-It will also not include any infrastructure related components (CSI Drivers, Cloud-Specific controllers,...), as these will be managed outside argocd by an IaC tool (enabled via add-ons).
+It will also not include any infrastructure related components (CSI Drivers, Cloud-Specific controllers,...), as these should be managed outside argocd by an IaC tool (enabled via add-ons).
 
 We allow developers to create their own infrastructure related components via crossplane, but only if these are app related and not infra related.
 
