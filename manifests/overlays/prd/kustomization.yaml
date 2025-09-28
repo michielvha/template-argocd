@@ -7,3 +7,12 @@ resources:
 #- ../../base/aws-load-balancer-controller/overlays/prd
 - ../../base/external-secrets-operator
 - ../../base/reloader
+
+patches:
+- target:
+    kind: Application
+    name: platform
+  patch: |-
+    - op: replace
+      path: /spec/source/path
+      value: manifests/platform/overlays/prd
