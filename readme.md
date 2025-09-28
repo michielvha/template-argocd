@@ -1,6 +1,7 @@
 # GitOps Platform Template
 
 **TODO: Turn into our main template that has functionalities for all cloud platforms we've used. We should allow to easily enable and disable these features via kustomize.**
+**TODO: Add references to the infrastructure repos for azure, eks and use ansible with proxmox for on-prem.**
 
 This repository is used for bootstrapping a complete GitOps platform foundation including Argo CD, External Secrets Operator (ESO), and "decide load balancer solution".  
 
