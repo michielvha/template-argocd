@@ -35,14 +35,6 @@ patches:
 # - path: azure-patch.yaml # (uncomment if using Azure Workload Identity)
 
 - target:
-    kind: Application
-    name: argocd
-  patch: |-
-    - op: replace
-      path: /spec/source/path
-      value: manifests/platform/overlays/prd
-
-- target:
     kind: ClusterRole
     name: argocd-server
   patch: |-
