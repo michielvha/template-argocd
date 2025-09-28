@@ -10,8 +10,7 @@ We include the Platform Engineering and GitOps Paradigms to ensure a robust, sca
 
 > [!IMPORTANT]
 > By default the `main` branch of this repository is continually reconciled by the Argo CD Controller. Any changes made to this
-> branch will be automatically applied to the live environment.
-> Please ensure all modifications are intentional and reviewed before committing.
+> branch will be automatically applied to the live environment. Please ensure all modifications are intentional and reviewed before committing.
 
 ## General Architecture
 
