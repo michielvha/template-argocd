@@ -32,7 +32,7 @@ configMapGenerator:
 patches:
 - path: patches.yaml
 
-- path: azure-patch.yaml # (uncomment if using Azure Workload Identity)
+# - path: azure-patch.yaml # (uncomment if using Azure Workload Identity)
 
 - target:
     kind: Application
