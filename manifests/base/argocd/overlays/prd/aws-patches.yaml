@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+  annotations:
+    alb.ingress.kubernetes.io/certificate-arn: <ARGOCD_CERT_ARN_PRD>
+    alb.ingress.kubernetes.io/target-type: ip
+    # TLS via ACM on the ALB:
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    # Redirect HTTP to HTTPS
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    # Use HTTPS for backend communication
+    alb.ingress.kubernetes.io/backend-protocol: HTTPS
+spec:
+  ingressClassName: alb

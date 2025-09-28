@@ -1,0 +1,21 @@
+# Default policy for all authenticated users (readonly access)
+p, role:readonly, applications, get, */*, allow
+p, role:readonly, repositories, get, *, allow
+p, role:readonly, clusters, get, *, allow
+p, role:readonly, projects, get, *, allow
+p, role:readonly, logs, get, */*, allow
+
+# Admin policy for Okta group
+# Full admin permissions for the specificied Okta group
+p, role:admin, applications, *, */*, allow
+p, role:admin, repositories, *, *, allow
+p, role:admin, clusters, *, *, allow
+p, role:admin, projects, *, *, allow
+p, role:admin, logs, *, */*, allow
+p, role:admin, exec, *, */*, allow
+p, role:admin, certificates, *, *, allow
+p, role:admin, accounts, *, *, allow
+p, role:admin, gpgkeys, *, *, allow
+
+# Group mapping - map Okta group to admin role
+g, admin, role:admin

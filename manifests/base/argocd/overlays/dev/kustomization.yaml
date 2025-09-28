@@ -1,0 +1,42 @@
+# TODO: Align with PRD overlay once done, everything here should be considered outdated.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+- ../../base
+- https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.4/manifests/ha/install.yaml
+- projects
+
+configMapGenerator:
+- name: argocd-cm
+  behavior: merge
+  files:
+  - oidc.config=config/oidc.yaml
+  envs:
+  - config/argocd-cm.env
+
+- name: argocd-cmd-params-cm
+  behavior: merge
+  envs:
+  - config/argocd-cmd-params-cm.env
+
+# Reference: https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-rbac-cm-yaml/
+- name: argocd-rbac-cm
+  behavior: merge
+  files:
+  - config/policy.csv
+  envs:
+  - config/rbac.env
+
+
+patches:
+- path: patches.yaml
+- target:
+    kind: Application
+    name: argocd
+  patch: |-
+    - op: replace
+      path: /spec/source/path
+      value: manifests/platform/overlays/dev

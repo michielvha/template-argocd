@@ -1,0 +1,50 @@
+# Additional RBAC permissions for ArgoCD Server to manage Applications across all namespaces
+# 
+# This ClusterRole and ClusterRoleBinding are required because ArgoCD Server needs permissions
+# to create, update, patch, and delete Application resources in the argoproj.io API group
+# across all namespaces, not just the argocd namespace where it's deployed.
+#
+# Without these permissions, ArgoCD Server will fail with errors like:
+# "applications.argoproj.io "app-name" is forbidden: User "system:serviceaccount:argocd:argocd-server" 
+# cannot update resource "applications" in API group "argoproj.io" in the namespace "target-namespace"
+#
+# This is especially important when ArgoCD manages applications deployed to different namespaces
+# such as "platform", etc.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-server-cluster-apps
+    app.kubernetes.io/part-of: argocd
+    app.kubernetes.io/component: server
+  name: argocd-server-cluster-apps
+rules:
+- apiGroups:
+  - "argoproj.io"
+  resources:
+  - "applications"
+  verbs:
+  - create
+  - delete
+  - update
+  - patch
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-server-cluster-apps
+    app.kubernetes.io/part-of: argocd
+    app.kubernetes.io/component: server
+  name: argocd-server-cluster-apps
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-server-cluster-apps
+subjects:
+- kind: ServiceAccount
+  name: argocd-server
+  namespace: argocd

@@ -1,0 +1,8 @@
+# Requires you to point a DNS record to the domain name of the ALB / azure lb created by this Ingress. TODO: automate that somehow, using ExternalDNS?
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+spec:
+  rules:
+  - host: <TO_OVERLAY>

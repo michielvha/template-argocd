@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform-dev
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  destinations:
+    - namespace: '*'
+      name: in-cluster
+  sourceRepos:
+    - '*'
+  sourceNamespaces:
+    - '*'
+  roles:
+  - name: read-only
+    description: Read only access
+    policies:
+    - p, proj:platform-dev:read-only, applications, get, platform-dev/*, allow
+    groups:
+    - <OIDC_GROUP_NAME/ID>
+  - name: admin
+    description: admin privileges to my-project
+    policies:
+    - p, proj:platform-dev:admin, applications, *, platform-dev/*, allow
+    groups:
+    - <OIDC_GROUP_NAME/ID>

@@ -1,0 +1,8 @@
+# How to reference sensitive data in OIDC config: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
+# Configure OKTA as OIDC provider: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/okta/
+name: Okta
+issuer: <OKTA_ISSUER_URL> # e.g. https://dev-123456.okta.com/oauth2/default
+clientID: $argocd-secret:oidc.clientID
+clientSecret: $argocd-secret:oidc.clientSecret
+requestedScopes: ["openid", "profile", "email", "groups"]
+#requestedIDTokenClaims: {"groups": {"essential": true}}

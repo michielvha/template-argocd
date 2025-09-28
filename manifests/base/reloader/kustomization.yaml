@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - https://raw.githubusercontent.com/stakater/Reloader/v1.4.8/deployments/kubernetes/reloader.yaml
+  - namespace.yaml
+
+namespace: reloader
+
+#patches:
+#  - target:
+#      kind: Deployment
+#    patch: |-
+#      - op: add
+#        path: /spec/template/spec/imagePullSecrets
+#        value: [{ name: YOUR-SECRET-NAME }]
