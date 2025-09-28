@@ -1,11 +1,8 @@
 # GitOps Platform Template
 
-**TODO: Turn into our main template that has functionalities for all cloud platforms we've used. We should allow to easily enable and disable these features via kustomize.**
-**TODO: Add references to the infrastructure repos for azure, eks and use ansible with proxmox for on-prem.**
+This repository is used for bootstrapping a **complete GitOps platform foundation** including Continous Delivery, Secret Management, and load balancing controllers.  
 
-This repository is used for bootstrapping a complete GitOps platform foundation including Argo CD, External Secrets Operator (ESO), and "decide load balancer solution".  
-
-This repository serves as a base template for managing a GitOps platform configurations across different environments (development and production) using a kustomize-based approach.
+It serves as a base template for managing a GitOps platform configurations across different environments (development and production) using a kustomize-based approach.
 
 All the environment specific stuff will have to be added to an overlay based on your needs.
 
@@ -13,8 +10,7 @@ We include the Platform Engineering and GitOps Paradigms to ensure a robust, sca
 
 > [!IMPORTANT]
 > By default the `main` branch of this repository is continually reconciled by the Argo CD Controller. Any changes made to this
-> branch will be automatically applied to the live environment. Please ensure all modifications are
-> intentional and reviewed before committing.
+> branch will be automatically applied to the live environment. Please ensure all modifications are intentional and reviewed before committing.
 
 ## General Architecture
 
@@ -123,3 +119,5 @@ own resources and the broader application ecosystem within the cluster.
 
 - Add external DNS operator
 - Add Cluster Auto Scaler
+- **Turn into our main template that has functionalities for all cloud platforms we've used. We should allow to easily enable and disable these features via kustomize.**
+- **Add references to the infrastructure repos for azure, eks and use ansible with proxmox for on-prem.**
