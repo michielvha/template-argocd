@@ -115,8 +115,8 @@ To leverage Workload Identity Federation for automatically adding clusters to Ar
                 "execProviderConfig": {
                   "command": "argocd-k8s-auth",
                   "env": {
-                    "AZURE_CLIENT_ID": "5bc5f230-293d-4d51-ac69-d4b56630a41a",
-                    "AZURE_TENANT_ID": "24139d14-c62c-4c47-8bdd-ce71ea1d50cf",
+                    "AZURE_CLIENT_ID": "YOUR_CLIENT_ID",
+                    "AZURE_TENANT_ID": "YOUR_TENANT_ID",
                     "AZURE_FEDERATED_TOKEN_FILE": "/var/run/secrets/azure/tokens/azure-identity-token",
                     "AZURE_AUTHORITY_HOST": "https://login.microsoftonline.com/",
                     "AAD_ENVIRONMENT_NAME": "AzurePublicCloud",
@@ -133,10 +133,10 @@ To leverage Workload Identity Federation for automatically adding clusters to Ar
       data:
         - secretKey: caCert
           remoteRef:
-            key: secret/ms-dev-aks-lenses-we-01-ca-cert
+            key: secret/aks-int-we-ca-cert
         - secretKey: serverUrl
           remoteRef:
-            key: secret/ms-dev-aks-lenses-we-01-server-url
+            key: secret/aks-int-we-server-url
    ```
 
 6. **Using Kustomize for Environment-Specific Variable Overlay:** This repository is structured to utilize Kustomize for easy management across different environments. Each environment is represented by its own folder within the Kustomize setup. To configure a new environment, follow these steps:
