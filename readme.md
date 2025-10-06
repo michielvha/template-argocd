@@ -92,7 +92,7 @@ manifests/
 
 > Details for each base app (argocd, envoy, etc.) are documented in their respective readme files under manifests/base.
 
-**TODO: explain only the main platform overlay folders here, rest of the info should be in a readme in the several app folders under manifests/base.**
+Main overlays import the applicative bases, which may include their own respective overlays if the config is not identical for all environments.
 
 ## Usage
 
@@ -102,6 +102,7 @@ Components will be deployed into their respective namespaces:
 - Argo CD: `argocd` namespace
 - External Secrets Operator: `external-secrets` namespace
 - AWS Load Balancer Controller: `kube-system` namespace
+- Reloader: `reloader` namespace
 
 ```bash
 # Development
