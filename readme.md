@@ -122,3 +122,4 @@ own resources and the broader application ecosystem within the cluster.
 - Add Cluster Auto Scaler
 - **Turn into our main template that has functionalities for all cloud platforms we've used. We should allow to easily enable and disable these features via kustomize.**
 - **Add references to the infrastructure repos for azure, eks and use ansible with proxmox for on-prem.**
+- **Extended with EKS Declarative cluster addition.**
