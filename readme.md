@@ -47,7 +47,7 @@ To ensure separation of concerns, three repositories are used to manage the comp
 
 The essential components of this GitOps platform are the minimum required to provide a robust and secure foundation for managing Kubernetes clusters and applications.
 
-Ofcourse this is just a template, so you can remove/add any components you (don't) need. However, I would recommend to keep these components as a pure base.
+Of course this is just a template, so you can remove/add any components you (don't) need. However, I would recommend to keep these components as a pure base.
 
 - **Secret Management Tool:** for secure handling of sensitive information.
   - **External Secrets Operator:** (ESO): Integrates external secret management systems with Kubernetes, providing secure secret synchronization from external sources.
