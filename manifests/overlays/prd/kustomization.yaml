@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- namespaces.yaml # extra namespaces for argocd apps
+- ../../base/ # import only agnostic components in base.
+- ../../base/argocd/overlays/prd
+#- ../../base/aws-load-balancer-controller/overlays/prd
+- ../../base/external-secrets-operator
+
+
+patches:
+- target:
+    kind: Application
+    name: platform
+  patch: |-
+    - op: replace
+      path: /spec/source/path
+      value: manifests/platform/overlays/prd

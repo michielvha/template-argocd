@@ -1,0 +1,49 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Reference Architecture: https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+# Reference Manifests: https://docs.aws.amazon.com/eks/latest/userguide/lbc-manifest.html
+# Reference Helm: https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html
+
+helmCharts:
+- name: aws-load-balancer-controller
+  namespace: kube-system
+  releaseName: aws-load-balancer-controller
+  includeCRDs: true
+  repo: https://aws.github.io/eks-charts
+  version: 1.13.4
+  valuesInline:
+    clusterName: <PROD_CLUSTER_NAME>
+    region: <REGION>
+    serviceAccount:
+      create: true
+      name: aws-load-balancer-controller
+    enableShield: false
+    enableWaf: false
+    enableWafv2: false
+    # Ingress class configuration
+    ingressClass: alb
+    # IngressClassParams configuration
+    ingressClassParams:
+      # TODO: add the annotations here instead of on the ingress object
+      create: true
+      name: alb-ingress-class-params
+      spec:
+        # Configure load balancer attributes for better performance and security
+        loadBalancerAttributes:
+        - key: idle_timeout.timeout_seconds
+          value: "60"
+        - key: routing.http2.enabled
+          value: "true"
+        - key: access_logs.s3.enabled
+          value: "false"
+        ipAddressType: ipv4
+        scheme: internal
+        group:
+          name: shared-internal
+        tags:
+        - key: Environment
+          value: production
+        - key: ManagedBy
+          value: aws-load-balancer-controller
+    createIngressClassResource: true

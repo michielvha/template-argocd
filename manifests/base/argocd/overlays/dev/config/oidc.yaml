@@ -1,0 +1,6 @@
+name: Okta
+issuer: <OKTA_ISSUER_URL> # e.g. https://dev-123456.okta.com/oauth2/default
+clientID: $argocd-secret:oidc.clientID
+clientSecret: $argocd-secret:oidc.clientSecret
+requestedScopes: ["openid", "profile", "email", "groups"]
+#requestedIDTokenClaims: {"groups": {"essential": true}}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: platform
+  labels:
+    env: prd
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app-prd
+  labels:
+    env: prd
