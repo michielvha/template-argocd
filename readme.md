@@ -6,7 +6,7 @@ It serves as a base template for managing a GitOps platform configurations acros
 
 All the environment specific stuff will have to be added to an overlay based on your needs.
 
-We include the Platform Engineering and GitOps Paradigms to ensure a robust, scalable, and secure foundation for managing Kubernetes clusters and applications.
+We include the Platform Engineering and GitOps Paradigms to ensure a scalable and secure foundation for managing Kubernetes clusters and applications.
 
 > [!IMPORTANT]
 > By default the `main` branch of this repository is continually reconciled by the Argo CD Controller. Any changes made to this
@@ -18,9 +18,9 @@ What makes a great platform is pretty subjective and really comes down to your o
 It depends on the cloud provider you are using, or maybe you are on prem, who knows.
 
 The purpose of this repository is to provide a basic template that can be used as a starting point for any platform no matter which infrastructure you are on. 
-While the main focus of this template is cloud we will include an on-prem component as well (for all my home labbers and true kubernetes warriors).
+While the main focus of this template is the cloud we will include an on-prem component as well (for all my home labbers and true kubernetes warriors).
 
-Given our requirements we have decided to follow the gitops separation of concerns, this repository will only contain the platform related application components and not the application workload related components.
+Given our requirements we have decided to follow the GitOps separation of concerns, this repository will only contain the platform related application components and not the application workload related components.
 It will also not include any infrastructure related components (CSI Drivers, Cloud-Specific controllers,...), as these should be managed outside argocd by an IaC tool (enabled via add-ons).
 
 We allow developers to create their own infrastructure related components via crossplane, but only if these are app related and not infra related.
@@ -30,7 +30,8 @@ We allow developers to create their own infrastructure related components via cr
 We consider GitOps to be:
 
 - Git as the single source of truth for declarative infrastructure and applications.
-- Folder per environment (e.g., `dev`, `prd`) containing kustomize overlays for environment-specific configurations. NO Branches per environment.
+  - state is automatically reconciled by agents (pull based).
+- Folder per environment (e.g., `dev`, `prd`) containing kustomize overlays for environment-specific configurations. **NO Branches per environment.**
   - Automated deployment of changes (through pull requests) on main branch using "trunk-based" development.
 - Clear separation of concerns between platform setup, argocd applications and K8S application configuration.
 
@@ -122,4 +123,4 @@ own resources and the broader application ecosystem within the cluster.
 - Add Cluster Auto Scaler
 - **Turn into our main template that has functionalities for all cloud platforms we've used. We should allow to easily enable and disable these features via kustomize.**
 - **Add references to the infrastructure repos for azure, eks and use ansible with proxmox for on-prem.**
-- **Extended with EKS Declarative cluster addition.**
+- **Extend with EKS Declarative cluster addition.**
