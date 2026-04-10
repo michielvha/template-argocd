@@ -8,7 +8,7 @@ resources:
 namespace: external-secrets
 
 helmCharts:
-- version: 2.2.0
+- version: 2.3.0
   releaseName: external-secrets
   name: external-secrets
   namespace: external-secrets
